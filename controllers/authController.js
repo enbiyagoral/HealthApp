@@ -1,8 +1,7 @@
 const bcrypt = require('bcrypt');
 const {uploadProfilePhoto} = require('../controllers/s3Controller');
 
-const doctorModel = require('../models/Doctor');
-const patientModel = require('../models/Patient');
+const {Doctor, Patient} = require('../models/User');
 const checkEmail = require('../utils/checkEmail');
  
 
@@ -37,42 +36,48 @@ async function register(req,res){
     const salt = await bcrypt.genSalt(saltrounds);
     const hashedPassword = await bcrypt.hash(password,salt);
   
-    if(role==="doctor"){
-        const doctor = new doctorModel({
-            name,
-            surname,
-            email,
-            password: hashedPassword,
-            specialization,
-            profilePhoto: checkPhoto.Location,
-            iban,
-            location
+    try {
+        let user;
+
+        if (role === 'doctor') {
+            user = new Doctor({
+                name,
+                surname,
+                email,
+                password: hashedPassword,
+                specialization,
+                profilePhoto: checkPhoto.Location,
+                iban,
+                location,
+            });
+        } else if (role === 'patient') {
+            user = new Patient({
+                name,
+                surname,
+                email,
+                password: hashedPassword,
+                height,
+                weight,
+                profilePhoto: checkPhoto.Location,
+                bloodGroup,
+            });
+        }
+        await user.save();
+
+        return res.status(201).json({
+            success: true,
+            message: 'Kullanıcı oluşturuldu!',
         });
-
-        await doctor.save();
-    };
-
-    if(role==="patient"){
-        const patient = new patientModel({
-            name,
-            surname,
-            email,
-            password: hashedPassword,
-            height,
-            weight,
-            profilePhoto: checkPhoto.Location,
-            bloodGroup,
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: 'Kullanıcı oluşturma hatası: ' + error.message,
         });
-
-        await patient.save();
     }
-    
-    res.send("Kullanıcı oluşturuldu!");
 };
 
 async function login(req,res){
     const { email, password } = req.body;
-    console.log(email,password);
 
     const check = await checkEmail(email);
 
@@ -80,7 +85,7 @@ async function login(req,res){
         return res.send("Email veya şifre hatalı!");
     };
 
-    const user = check.user[0]
+    const user = check.user;
     const isTrue = await bcrypt.compare(password,user.password);
 
     if(!isTrue){
