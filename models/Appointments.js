@@ -14,7 +14,7 @@ const appointmentSchema = new Schema({
     },
     date: {
         type: Date,
-        require: true
+        default: Date.now(),
     },
     isAvailable: {
         type: Boolean,
