@@ -6,6 +6,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 const authRouter = require('./router/authRouter');
 const doctorRouter = require('./router/doctorRouter');
+const patientRouter = require('./router/patientRouter');
 const MongoStore = require('connect-mongo');
 
 const app = express();
@@ -36,6 +37,7 @@ mongoose.connect(process.env.MONGO_URI)
 
 app.use('/api/auth',authRouter);
 app.use('/api/doctor',doctorRouter);
+app.use('/api/patient',patientRouter);
 
 
 const port = 3000 || process.env.PORT;
