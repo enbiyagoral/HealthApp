@@ -96,9 +96,7 @@ async function login(req,res){
     req.session.loggedIn = true;
     req.session.userRole = user.__t;
     req.session.userId = user._id;
-
-    console.log(req.session.loggedIn, req.session.userRole,req.session.userId);
-
+    
     return res.send("Giriş başarılı!");
 }
 
