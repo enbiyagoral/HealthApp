@@ -1,0 +1,596 @@
+[
+    {
+      "name": "Dr. Ayşe",
+      "surname": "Yılmaz",
+      "email": "ayse@example.com",
+      "password": "hashedpassword1",
+      "specialization": "Cardiologist",
+      "iban": "TR1234567890123456789012341",
+      "location": {
+        "city": "Istanbul",
+        "hospitalName": "Istanbul Hospital 1"
+      }
+    },
+    {
+      "name": "Dr. Mehmet",
+      "surname": "Kaya",
+      "email": "mehmet@example.com",
+      "password": "hashedpassword2",
+      "specialization": "Dermatologist",
+      "iban": "TR1234567890123456789012342",
+      "location": {
+        "city": "Ankara",
+        "hospitalName": "Ankara Hospital 1"
+      }
+    },
+    {
+      "name": "Dr. Ali",
+      "surname": "Demir",
+      "email": "ali@example.com",
+      "password": "hashedpassword3",
+      "specialization": "Pediatrician",
+      "iban": "TR1234567890123456789012343",
+      "location": {
+        "city": "Izmir",
+        "hospitalName": "Izmir Hospital 1"
+      }
+    },
+    {
+      "name": "Dr. Fatma",
+      "surname": "Aydın",
+      "email": "fatma@example.com",
+      "password": "hashedpassword4",
+      "specialization": "Orthopedic",
+      "iban": "TR1234567890123456789012344",
+      "location": {
+        "city": "Bursa",
+        "hospitalName": "Bursa Hospital 1"
+      }
+    },
+    {
+      "name": "Dr. Zeynep",
+      "surname": "Erdem",
+      "email": "zeynep@example.com",
+      "password": "hashedpassword5",
+      "specialization": "Chief Doctor",
+      "iban": "TR1234567890123456789012345",
+      "location": {
+        "city": "Antalya",
+        "hospitalName": "Antalya Hospital 1"
+      }
+    },
+    {
+      "name": "Dr. Ahmet",
+      "surname": "Kurt",
+      "email": "ahmet@example.com",
+      "password": "hashedpassword6",
+      "specialization": "Dentist",
+      "iban": "TR1234567890123456789012346",
+      "location": {
+        "city": "Istanbul",
+        "hospitalName": "Istanbul Hospital 2"
+      }
+    },
+    {
+      "name": "Dr. Sevgi",
+      "surname": "Kara",
+      "email": "sevgi@example.com",
+      "password": "hashedpassword7",
+      "specialization": "Neurologist",
+      "iban": "TR1234567890123456789012347",
+      "location": {
+        "city": "Izmir",
+        "hospitalName": "Izmir Hospital 2"
+      }
+    },
+    {
+      "name": "Dr. Hasan",
+      "surname": "Öz",
+      "email": "hasan@example.com",
+      "password": "hashedpassword8",
+      "specialization": "Gynecologist",
+      "iban": "TR1234567890123456789012348",
+      "location": {
+        "city": "Ankara",
+        "hospitalName": "Ankara Hospital 2"
+      }
+    },
+    {
+      "name": "Dr. Elif",
+      "surname": "Çelik",
+      "email": "elif@example.com",
+      "password": "hashedpassword9",
+      "specialization": "Oncologist",
+      "iban": "TR1234567890123456789012349",
+      "location": {
+        "city": "Istanbul",
+        "hospitalName": "Istanbul Hospital 3"
+      }
+    },
+    {
+      "name": "Dr. Serdar",
+      "surname": "Yıldırım",
+      "email": "serdar@example.com",
+      "password": "hashedpassword10",
+      "specialization": "Urologist",
+      "iban": "TR1234567890123456789012350",
+      "location": {
+        "city": "Izmir",
+        "hospitalName": "Izmir Hospital 3"
+      }
+    },
+        {
+          "name": "Dr. Burak",
+          "surname": "Aksoy",
+          "email": "burak@example.com",
+          "password": "hashedpassword11",
+          "specialization": "Psychiatrist",
+          "iban": "TR1234567890123456789012361",
+          "location": {
+            "city": "Antalya",
+            "hospitalName": "Antalya Hospital 2"
+          }
+        },
+        {
+          "name": "Dr. Esra",
+          "surname": "Yılmaz",
+          "email": "esra@example.com",
+          "password": "hashedpassword12",
+          "specialization": "Ophthalmologist",
+          "iban": "TR1234567890123456789012362",
+          "location": {
+            "city": "Istanbul",
+            "hospitalName": "Istanbul Hospital 4"
+          }
+        },
+        {
+          "name": "Dr. Mehmet",
+          "surname": "Şahin",
+          "email": "mehmet2@example.com",
+          "password": "hashedpassword13",
+          "specialization": "Dentist",
+          "iban": "TR1234567890123456789012363",
+          "location": {
+            "city": "Ankara",
+            "hospitalName": "Ankara Hospital 3"
+          }
+        },
+        {
+          "name": "Dr. Selin",
+          "surname": "Aydın",
+          "email": "selin@example.com",
+          "password": "hashedpassword14",
+          "specialization": "Orthopedic",
+          "iban": "TR1234567890123456789012364",
+          "location": {
+            "city": "Bursa",
+            "hospitalName": "Bursa Hospital 2"
+          }
+        },
+        {
+          "name": "Dr. Ahmet",
+          "surname": "Ergin",
+          "email": "ahmet2@example.com",
+          "password": "hashedpassword15",
+          "specialization": "Neurologist",
+          "iban": "TR1234567890123456789012365",
+          "location": {
+            "city": "Izmir",
+            "hospitalName": "Izmir Hospital 4"
+          }
+        },
+        {
+          "name": "Dr. Sibel",
+          "surname": "Kurtuluş",
+          "email": "sibel@example.com",
+          "password": "hashedpassword16",
+          "specialization": "Gynecologist",
+          "iban": "TR1234567890123456789012366",
+          "location": {
+            "city": "Antalya",
+            "hospitalName": "Antalya Hospital 3"
+          }
+        },
+        {
+          "name": "Dr. Mehmet",
+          "surname": "Ateş",
+          "email": "mehmet3@example.com",
+          "password": "hashedpassword17",
+          "specialization": "Cardiologist",
+          "iban": "TR1234567890123456789012367",
+          "location": {
+            "city": "Ankara",
+            "hospitalName": "Ankara Hospital 4"
+          }
+        },
+        {
+          "name": "Dr. Elif",
+          "surname": "Güneş",
+          "email": "elif2@example.com",
+          "password": "hashedpassword18",
+          "specialization": "Urologist",
+          "iban": "TR1234567890123456789012368",
+          "location": {
+            "city": "Istanbul",
+            "hospitalName": "Istanbul Hospital 5"
+          }
+        },
+        {
+          "name": "Dr. Zeynep",
+          "surname": "Türk",
+          "email": "zeynep2@example.com",
+          "password": "hashedpassword19",
+          "specialization": "Dermatologist",
+          "iban": "TR1234567890123456789012369",
+          "location": {
+            "city": "Izmir",
+            "hospitalName": "Izmir Hospital 5"
+          }
+        },
+        {
+          "name": "Dr. Cem",
+          "surname": "Sarı",
+          "email": "cem@example.com",
+          "password": "hashedpassword20",
+          "specialization": "Pediatrician",
+          "iban": "TR1234567890123456789012370",
+          "location": {
+            "city": "Bursa",
+            "hospitalName": "Bursa Hospital 3"
+          }
+        }
+      ,
+        {
+          "name": "Dr. Emir",
+          "surname": "Demirci",
+          "email": "emir@example.com",
+          "password": "hashedpassword21",
+          "specialization": "Dentist",
+          "iban": "TR1234567890123456789012371",
+          "location": {
+            "city": "Istanbul",
+            "hospitalName": "Istanbul Hospital 6"
+          }
+        },
+        {
+          "name": "Dr. Yasemin",
+          "surname": "Akgün",
+          "email": "yasemin@example.com",
+          "password": "hashedpassword22",
+          "specialization": "Neurologist",
+          "iban": "TR1234567890123456789012372",
+          "location": {
+            "city": "Ankara",
+            "hospitalName": "Ankara Hospital 5"
+          }
+        },
+        {
+          "name": "Dr. Fatih",
+          "surname": "Yıldız",
+          "email": "fatih@example.com",
+          "password": "hashedpassword23",
+          "specialization": "Orthopedic",
+          "iban": "TR1234567890123456789012373",
+          "location": {
+            "city": "Izmir",
+            "hospitalName": "Izmir Hospital 6"
+          }
+        },
+        {
+          "name": "Dr. Seda",
+          "surname": "Karaçay",
+          "email": "seda@example.com",
+          "password": "hashedpassword24",
+          "specialization": "Gynecologist",
+          "iban": "TR1234567890123456789012374",
+          "location": {
+            "city": "Antalya",
+            "hospitalName": "Antalya Hospital 4"
+          }
+        },
+        {
+          "name": "Dr. Hasan",
+          "surname": "Yılmaz",
+          "email": "hasan@example.com",
+          "password": "hashedpassword25",
+          "specialization": "Cardiologist",
+          "iban": "TR1234567890123456789012375",
+          "location": {
+            "city": "Bursa",
+            "hospitalName": "Bursa Hospital 4"
+          }
+        },
+        {
+          "name": "Dr. Sevil",
+          "surname": "Turan",
+          "email": "sevil@example.com",
+          "password": "hashedpassword26",
+          "specialization": "Urologist",
+          "iban": "TR1234567890123456789012376",
+          "location": {
+            "city": "Istanbul",
+            "hospitalName": "Istanbul Hospital 7"
+          }
+        },
+        {
+          "name": "Dr. Burcu",
+          "surname": "Şahin",
+          "email": "burcu@example.com",
+          "password": "hashedpassword27",
+          "specialization": "Dermatologist",
+          "iban": "TR1234567890123456789012377",
+          "location": {
+            "city": "Ankara",
+            "hospitalName": "Ankara Hospital 6"
+          }
+        },
+        {
+          "name": "Dr. Serkan",
+          "surname": "Koç",
+          "email": "serkan@example.com",
+          "password": "hashedpassword28",
+          "specialization": "Pediatrician",
+          "iban": "TR1234567890123456789012378",
+          "location": {
+            "city": "Izmir",
+            "hospitalName": "Izmir Hospital 7"
+          }
+        },
+        {
+          "name": "Dr. Ela",
+          "surname": "Özdemir",
+          "email": "ela@example.com",
+          "password": "hashedpassword29",
+          "specialization": "Oncologist",
+          "iban": "TR1234567890123456789012379",
+          "location": {
+            "city": "Antalya",
+            "hospitalName": "Antalya Hospital 5"
+          }
+        },
+        {
+          "name": "Dr. Kaan",
+          "surname": "Karakaya",
+          "email": "kaan@example.com",
+          "password": "hashedpassword30",
+          "specialization": "Chief Doctor",
+          "iban": "TR1234567890123456789012380",
+          "location": {
+            "city": "Bursa",
+            "hospitalName": "Bursa Hospital 5"
+          }
+        }
+      ,
+        {
+          "name": "Dr. Can",
+          "surname": "Güzel",
+          "email": "can@example.com",
+          "password": "hashedpassword31",
+          "specialization": "Psychiatrist",
+          "iban": "TR1234567890123456789012381",
+          "location": {
+            "city": "Istanbul",
+            "hospitalName": "Istanbul Hospital 8"
+          }
+        },
+        {
+          "name": "Dr. Selin",
+          "surname": "Yılmaz",
+          "email": "selin2@example.com",
+          "password": "hashedpassword32",
+          "specialization": "Ophthalmologist",
+          "iban": "TR1234567890123456789012382",
+          "location": {
+            "city": "Ankara",
+            "hospitalName": "Ankara Hospital 7"
+          }
+        },
+        {
+          "name": "Dr. Eren",
+          "surname": "Turan",
+          "email": "eren@example.com",
+          "password": "hashedpassword33",
+          "specialization": "Dentist",
+          "iban": "TR1234567890123456789012383",
+          "location": {
+            "city": "Izmir",
+            "hospitalName": "Izmir Hospital 8"
+          }
+        },
+        {
+          "name": "Dr. Esra",
+          "surname": "Karaçay",
+          "email": "esra2@example.com",
+          "password": "hashedpassword34",
+          "specialization": "Orthopedic",
+          "iban": "TR1234567890123456789012384",
+          "location": {
+            "city": "Antalya",
+            "hospitalName": "Antalya Hospital 6"
+          }
+        },
+        {
+          "name": "Dr. Hasan",
+          "surname": "Demirci",
+          "email": "hasan2@example.com",
+          "password": "hashedpassword35",
+          "specialization": "Cardiologist",
+          "iban": "TR1234567890123456789012385",
+          "location": {
+            "city": "Bursa",
+            "hospitalName": "Bursa Hospital 6"
+          }
+        },
+        {
+          "name": "Dr. Ebru",
+          "surname": "Yıldız",
+          "email": "ebru@example.com",
+          "password": "hashedpassword36",
+          "specialization": "Neurologist",
+          "iban": "TR1234567890123456789012386",
+          "location": {
+            "city": "Istanbul",
+            "hospitalName": "Istanbul Hospital 9"
+          }
+        },
+        {
+          "name": "Dr. Aykut",
+          "surname": "Şahin",
+          "email": "aykut@example.com",
+          "password": "hashedpassword37",
+          "specialization": "Dermatologist",
+          "iban": "TR1234567890123456789012387",
+          "location": {
+            "city": "Ankara",
+            "hospitalName": "Ankara Hospital 8"
+          }
+        },
+        {
+          "name": "Dr. Nil",
+          "surname": "Koç",
+          "email": "nil@example.com",
+          "password": "hashedpassword38",
+          "specialization": "Pediatrician",
+          "iban": "TR1234567890123456789012388",
+          "location": {
+            "city": "Izmir",
+            "hospitalName": "Izmir Hospital 9"
+          }
+        },
+        {
+          "name": "Dr. Cem",
+          "surname": "Türk",
+          "email": "cem2@example.com",
+          "password": "hashedpassword39",
+          "specialization": "Gynecologist",
+          "iban": "TR1234567890123456789012389",
+          "location": {
+            "city": "Antalya",
+            "hospitalName": "Antalya Hospital 7"
+          }
+        },
+        {
+          "name": "Dr. Emir",
+          "surname": "Özdemir",
+          "email": "emir2@example.com",
+          "password": "hashedpassword40",
+          "specialization": "Oncologist",
+          "iban": "TR1234567890123456789012390",
+          "location": {
+            "city": "Bursa",
+            "hospitalName": "Bursa Hospital 7"
+          }
+        },
+        {
+          "name": "Dr. Selen",
+          "surname": "Yıldırım",
+          "email": "selen@example.com",
+          "password": "hashedpassword41",
+          "specialization": "Chief Doctor",
+          "iban": "TR1234567890123456789012391",
+          "location": {
+            "city": "Istanbul",
+            "hospitalName": "Istanbul Hospital 10"
+          }
+        },
+        {
+          "name": "Dr. Kaan",
+          "surname": "Özkan",
+          "email": "kaan2@example.com",
+          "password": "hashedpassword42",
+          "specialization": "Urologist",
+          "iban": "TR1234567890123456789012392",
+          "location": {
+            "city": "Ankara",
+            "hospitalName": "Ankara Hospital 9"
+          }
+        },
+        {
+          "name": "Dr. Eylem",
+          "surname": "Yılmaz",
+          "email": "eylem@example.com",
+          "password": "hashedpassword43",
+          "specialization": "Dentist",
+          "iban": "TR1234567890123456789012393",
+          "location": {
+            "city": "Izmir",
+            "hospitalName": "Izmir Hospital 10"
+          }
+        },
+        {
+          "name": "Dr. Ceren",
+          "surname": "Demir",
+          "email": "ceren@example.com",
+          "password": "hashedpassword44",
+          "specialization": "Orthopedic",
+          "iban": "TR1234567890123456789012394",
+          "location": {
+            "city": "Antalya",
+            "hospitalName": "Antalya Hospital 8"
+          }
+        },
+        {
+          "name": "Dr. Arda",
+          "surname": "Kaya",
+          "email": "arda@example.com",
+          "password": "hashedpassword45",
+          "specialization": "Cardiologist",
+          "iban": "TR1234567890123456789012395",
+          "location": {
+            "city": "Bursa",
+            "hospitalName": "Bursa Hospital 8"
+          }
+        },
+        {
+          "name": "Dr. Aysun",
+          "surname": "Yıldız",
+          "email": "aysun@example.com",
+          "password": "hashedpassword46",
+          "specialization": "Neurologist",
+          "iban": "TR1234567890123456789012396",
+          "location": {
+            "city": "Istanbul",
+            "hospitalName": "Istanbul Hospital 11"
+          }
+        },
+        {
+          "name": "Dr. Deniz",
+          "surname": "Ergin",
+          "email": "deniz@example.com",
+          "password": "hashedpassword47",
+          "specialization": "Dermatologist",
+          "iban": "TR1234567890123456789012397",
+          "location": {
+            "city": "Ankara",
+            "hospitalName": "Ankara Hospital 10"
+          }
+        },
+        {
+          "name": "Dr. Burhan",
+          "surname": "Aydın",
+          "email": "burhan@example.com",
+          "password": "hashedpassword48",
+          "specialization": "Pediatrician",
+          "iban": "TR1234567890123456789012398",
+          "location": {
+            "city": "Izmir",
+            "hospitalName": "Izmir Hospital 11"
+          }
+        },
+        {
+          "name": "Dr. Gizem",
+          "surname": "Kurtuluş",
+          "email": "gizem@example.com",
+          "password": "hashedpassword49",
+          "specialization": "Gynecologist",
+          "iban": "TR1234567890123456789012399",
+          "location": {
+            "city": "Antalya",
+            "hospitalName": "Antalya Hospital 9"
+          }
+        }
+      ]
+      
+      
+      
+  

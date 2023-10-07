@@ -5,8 +5,8 @@ const {Doctor, Patient} = require('../models/User');
 const checkEmail = require('../utils/checkEmail');
  
 
-async function register(req,res){
-    const role = req.query.role  == "doctor" ? "doctor": "patient";
+async function register(req, res) {
+    const role = req.query.role === 'doctor' ? 'doctor' : 'patient';
 
     const {
         name,
@@ -17,15 +17,19 @@ async function register(req,res){
         height,
         weight,
         iban,
-        location,
-        bloodGroup
+        city,
+        hospitalName,
+        bloodGroup,
     } = req.body;
 
     // Email kontrolü
     const check_Email = await checkEmail(email);
-    if(!check_Email.success){
-        return res.send({"status":check_Email.success, "message": check_Email.messages});
-    };
+    if (!check_Email.success) {
+        return res.status(400).json({
+            success: false,
+            message: check_Email.messages,
+        });
+    }
 
     // S3'e fotoğraf yükleme
     const profilePhoto = req.file;
@@ -34,8 +38,8 @@ async function register(req,res){
     // Şifre hashleme
     const saltrounds = 10;
     const salt = await bcrypt.genSalt(saltrounds);
-    const hashedPassword = await bcrypt.hash(password,salt);
-  
+    const hashedPassword = await bcrypt.hash(password, salt);
+
     try {
         let user;
 
@@ -48,7 +52,10 @@ async function register(req,res){
                 specialization,
                 profilePhoto: checkPhoto.Location,
                 iban,
-                location,
+                location: {
+                    city,
+                    hospitalName,
+                },
             });
         } else if (role === 'patient') {
             user = new Patient({
@@ -62,6 +69,7 @@ async function register(req,res){
                 bloodGroup,
             });
         }
+
         await user.save();
 
         return res.status(201).json({
@@ -69,35 +77,54 @@ async function register(req,res){
             message: 'Kullanıcı oluşturuldu!',
         });
     } catch (error) {
+        console.error('Kullanıcı oluşturma hatası:', error);
         return res.status(500).json({
             success: false,
             message: 'Kullanıcı oluşturma hatası: ' + error.message,
         });
     }
-};
+}
 
-async function login(req,res){
+
+async function login(req, res) {
     const { email, password } = req.body;
 
-    const check = await checkEmail(email);
+    try {
+        const check = await checkEmail(email);
 
-    if(!check.login){
-        return res.send("Email veya şifre hatalı!");
-    };
+        if (!check.login) {
+            return res.status(401).json({
+                success: false,
+                message: "Email veya şifre hatalı!",
+            });
+        }
 
-    const user = check.user;
-    console.log(user);
-    const isTrue = await bcrypt.compare(password,user.password);
+        const user = check.user;
+        const isTrue = await bcrypt.compare(password, user.password);
 
-    if(!isTrue){
-        return res.send("Email veya şifre hatalı!");
+        if (!isTrue) {
+            return res.status(401).json({
+                success: false,
+                message: "Email veya şifre hatalı!",
+            });
+        }
+
+        req.session.loggedIn = true;
+        req.session.userRole = user.__t;
+        req.session.userId = user._id;
+
+        return res.status(200).json({
+            success: true,
+            message: "Giriş başarılı!",
+        });
+    } catch (error) {
+        console.error('Giriş hatası:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Giriş hatası: ' + error.message,
+        });
     }
-
-    req.session.loggedIn = true;
-    req.session.userRole = user.__t;
-    req.session.userId = user._id;
-    
-    return res.send("Giriş başarılı!");
 }
+
 
 module.exports = { register, login };
