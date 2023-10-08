@@ -55,7 +55,7 @@ async function deleteAppointment(req, res) {
       const id = req.params.id;
       const appointment = await Appointment.findOne({ _id: id });
       const doctor = await Doctor.findById(req.session.userId);
-  
+      
       if (!appointment) {
         return res.status(404).json({ error: 'Randevu bulunamadı.' });
       }
@@ -72,6 +72,7 @@ async function deleteAppointment(req, res) {
       // Güncellenmiş randevuları döndürün
       const appointments = doctor.appointments;
       res.status(200).json(appointments);
+      
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Sunucu hatası.' });

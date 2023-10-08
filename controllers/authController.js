@@ -35,11 +35,6 @@ async function register(req, res) {
     const profilePhoto = req.file;
     const checkPhoto = await uploadProfilePhoto(email, profilePhoto);
 
-    // Şifre hashleme
-    const saltrounds = 10;
-    const salt = await bcrypt.genSalt(saltrounds);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
     try {
         let user;
 
@@ -48,7 +43,7 @@ async function register(req, res) {
                 name,
                 surname,
                 email,
-                password: hashedPassword,
+                password,
                 specialization,
                 profilePhoto: checkPhoto.Location,
                 iban,
@@ -62,7 +57,7 @@ async function register(req, res) {
                 name,
                 surname,
                 email,
-                password: hashedPassword,
+                password,
                 height,
                 weight,
                 profilePhoto: checkPhoto.Location,

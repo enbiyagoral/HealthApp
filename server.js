@@ -22,11 +22,7 @@ app.use(session({
     })
 }));
 
-// app.use("*",(req,res,next)=>{
-//     req.session.userRole = req.user.__t
-//     userIN = req.session.userID;
-//     next();
-// });
+
 
 mongoose.connect(process.env.MONGO_URI)
     .then(()=>{

@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
@@ -60,12 +61,30 @@ const patientSchema = new Schema({
 });
 
 
+// Veritabanında fiiziksel yer kaplamaması için bir araya getirdiğim özellikler:
+userSchema.virtual('fullName').get(function(){
+    return this.name + ' ' + this.surname;
+});
+
+// Hashleme kısmı:
+userSchema.pre('save', async function(next){
+    try {
+        if(this.isModified('password')){
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(this.password,salt);
+            this.password = hashedPassword;
+        }
+        next();
+    } catch (error) {
+        next(error);
+    }
+})
+
+// Kullanılan sorgulara göre indexlediğim alanlar:
 userSchema.index({ email: 1 });
 userSchema.index({ appointments: 1 });
 doctorSchema.index({ specialization: 1 });
 doctorSchema.index({ 'location.city': 1, 'location.hospitalName': 1 });
-
-
 
 const User = mongoose.model('User', userSchema);
 const Doctor = User.discriminator('Doctor', doctorSchema);
