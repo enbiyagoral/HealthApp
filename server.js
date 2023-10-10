@@ -1,6 +1,5 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const AWS = require('aws-sdk');
 const session = require('express-session');
 const dotenv = require('dotenv');
 dotenv.config();
@@ -11,6 +10,11 @@ const MongoStore = require('connect-mongo');
 
 const app = express();
 
+const nodeEnv = process.env.NODE_ENV || 'development';
+const mongoURI = (nodeEnv === 'test')
+  ? process.env.TEST_MONGODB_URI
+  : process.env.MONGODB_URI;
+
 
 app.use(express.json());
 app.use(session({
@@ -18,25 +22,38 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
     store: MongoStore.create({
-        mongoUrl: process.env.MONGO_URI,
+        mongoUrl: mongoURI,
     })
 }));
 
 
-
-mongoose.connect(process.env.MONGO_URI)
-    .then(()=>{
-        console.log("MongoDB connected!");
-    }).catch(err=>{
-        console.log({msg:err});
+if(nodeEnv !== 'test'){
+// MongoDB veritabanına bağlanın
+  mongoose.connect(mongoURI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+    .then(() => {
+      console.log(`MongoDB connected - ${nodeEnv}`);
+      // Uygulama başlatma veya diğer işlemleri burada yapabilirsiniz.
+    })
+    .catch((err) => {
+      console.error('MongoDB Connection Error:', err);
     });
+}
+
+
 
 app.use('/api/auth',authRouter);
 app.use('/api/doctor',doctorRouter);
 app.use('/api/patient',patientRouter);
 
 
-const port = 3000 || process.env.PORT;
+const port = process.env.PORT || 3000;
+
 app.listen(port,()=>{
     console.log(`Server starting on ${port}`);
 })
+
+module.exports = app;
+

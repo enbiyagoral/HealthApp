@@ -44,7 +44,10 @@ const doctorSchema = new Schema({
         default: 0,
     },
     iban: String,
-    location: locationSchema,
+    location: {
+        type: locationSchema,
+        required:true
+    },
     isVerify: {
         type: Boolean,
         default: false,

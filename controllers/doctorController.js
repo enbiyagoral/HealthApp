@@ -1,5 +1,6 @@
 const { Doctor } = require('../models/User');
 const Appointment = require('../models/Appointments');
+const Response = require('../utils/response');
 
 async function createAppointment(req,res){
     const { name } = req.body;
@@ -17,14 +18,14 @@ async function createAppointment(req,res){
     doctor.appointments.push(appointment._id);
     await doctor.save();
     
-    res.send(cas);
-};
+    return new Response(201,'Randevu oluşturuldu!',cas).created(res);
+  };
 
 async function getAppointments(req,res){
     const appointments = await Appointment.find({
         doctor:req.session.userId,
     }).select('-doctor -__v');
-    res.send(appointments); 
+    return new Response(200,null, appointments).success(res);
 };
 
 async function getAppointment(req,res){ // Doktorun tüm randevuları
@@ -32,7 +33,7 @@ async function getAppointment(req,res){ // Doktorun tüm randevuları
     const appointment = await Appointment.find({
         _id:id,
     }).select('-doctor');
-    res.send(appointment); 
+    return new Response(200,null, appointment).success(res);
 };
 
 async function updateAppointment(req, res) {
@@ -41,13 +42,15 @@ async function updateAppointment(req, res) {
       const appointment = await Appointment.findOne({ _id: id });
   
       if (!appointment) {
-        return res.status(404).json({ error: 'Randevu bulunamadı.' });
+
+        return new Response(404,'Randevu bulunamadı.').error404(res);
+
       }
 
       appointment.isAvailable = isAvailable;
       const newAppointment = await appointment.save();
 
-      res.status(200).send(newAppointment);
+      return new Response(200, null, newAppointment).success(res);
 }
 
 async function deleteAppointment(req, res) {
@@ -57,8 +60,11 @@ async function deleteAppointment(req, res) {
       const doctor = await Doctor.findById(req.session.userId);
       
       if (!appointment) {
-        return res.status(404).json({ error: 'Randevu bulunamadı.' });
+
+        return new Response(404,'Randevu bulunamadı.').error404(res);
+        
       }
+    
   
       // Doktorun randevuları içinde belirli bir randevuyu silin
       doctor.appointments = doctor.appointments.filter(data => data._id.toString() !== appointment._id.toString());
@@ -71,11 +77,13 @@ async function deleteAppointment(req, res) {
   
       // Güncellenmiş randevuları döndürün
       const appointments = doctor.appointments;
-      res.status(200).json(appointments);
+
+      return new Response(200, null, appointments).success(res);
       
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Sunucu hatası.' });
+
+      return new Response(500).error500(res);
+
     }
 }
 

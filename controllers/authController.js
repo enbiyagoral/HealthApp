@@ -3,7 +3,7 @@ const {uploadProfilePhoto} = require('../controllers/s3Controller');
 
 const {Doctor, Patient} = require('../models/User');
 const checkEmail = require('../utils/checkEmail');
- 
+const Response = require('../utils/response');
 
 async function register(req, res) {
     const role = req.query.role === 'doctor' ? 'doctor' : 'patient';
@@ -24,11 +24,10 @@ async function register(req, res) {
 
     // Email kontrolü
     const check_Email = await checkEmail(email);
+
     if (!check_Email.success) {
-        return res.status(400).json({
-            success: false,
-            message: check_Email.messages,
-        });
+
+        return new Response(400,check_Email.messages).error400(res);
     }
 
     // S3'e fotoğraf yükleme
@@ -67,16 +66,12 @@ async function register(req, res) {
 
         await user.save();
 
-        return res.status(201).json({
-            success: true,
-            message: 'Kullanıcı oluşturuldu!',
-        });
-    } catch (error) {
-        console.error('Kullanıcı oluşturma hatası:', error);
-        return res.status(500).json({
-            success: false,
-            message: 'Kullanıcı oluşturma hatası: ' + error.message,
-        });
+        return new Response(201,'Kullanıcı oluşturuldu!').created(res);
+        
+    } catch (error) {       
+
+        return new Response(500).error500(res);
+
     }
 }
 
@@ -88,36 +83,30 @@ async function login(req, res) {
         const check = await checkEmail(email);
 
         if (!check.login) {
-            return res.status(401).json({
-                success: false,
-                message: "Email veya şifre hatalı!",
-            });
+
+            return new Response(401,"Email veya şifre hatalı!").unauthorized(res);
+            
         }
 
         const user = check.user;
         const isTrue = await bcrypt.compare(password, user.password);
 
         if (!isTrue) {
-            return res.status(401).json({
-                success: false,
-                message: "Email veya şifre hatalı!",
-            });
+
+            return new Response(401,"Email veya şifre hatalı!").unauthorized(res);
+
         }
 
         req.session.loggedIn = true;
         req.session.userRole = user.__t;
         req.session.userId = user._id;
 
-        return res.status(200).json({
-            success: true,
-            message: "Giriş başarılı!",
-        });
+        return new Response(200, "Giriş başarılı!").success(res);
+        
     } catch (error) {
-        console.error('Giriş hatası:', error);
-        return res.status(500).json({
-            success: false,
-            message: 'Giriş hatası: ' + error.message,
-        });
+
+        return new Response(500).error500(res);
+        
     }
 }
 
