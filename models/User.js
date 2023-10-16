@@ -69,6 +69,11 @@ userSchema.virtual('fullName').get(function(){
     return this.name + ' ' + this.surname;
 });
 
+patientSchema.virtual('MassIndex').get(function(){
+    return (this.weight/((this.height/100)*(this.height/100))).toFixed(2);
+});
+
+
 // Hashleme kısmı:
 userSchema.pre('save', async function(next){
     try {
