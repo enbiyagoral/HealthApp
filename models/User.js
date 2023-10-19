@@ -59,7 +59,7 @@ const patientSchema = new Schema({
     weight: Number,
     bloodGroup: {
         type: String,
-        enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', '0+', '0-'],
+        enum: ['A(RH)+', 'A(RH)-', 'B(RH)+', 'B(RH)-', 'AB(RH)+', 'AB(RH)-', '0(RH)+', '0(RH)-'],
     },
 });
 

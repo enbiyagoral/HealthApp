@@ -1,6 +1,7 @@
 const { Patient } = require('../models/User');
 const Appointment = require('../models/Appointments');
 const Response = require('../utils/response');
+const {uploadProfilePhoto} = require('../controllers/s3Controller');
 
 
 async function getAppointments(req,res){
@@ -52,7 +53,6 @@ async function leaveAppointment(req,res){
         appointment.patient = null;
     
         appointment.save();
-        console.log(appointment);
     
         await Patient.findByIdAndUpdate(patient._id, {
             $pull: { appointments: appointment._id },
@@ -66,26 +66,33 @@ async function leaveAppointment(req,res){
 };
 
 async function updatePatientUser(req,res){
-    const { height, weight, bloodGroup } = req.body; 
-    console.log(height);
     try {
+        const pf = req.query.pf == "1"? true:false;
         const patient = await Patient.findById(req.session.userId);
-
-        patient.height= height;
-        patient.weight= weight;
-        patient.bloodGroup= bloodGroup;
-
+        
+            // S3'e fotoğraf yükleme
+        if(pf){
+            const profilePhoto = req.file;
+            const checkPhoto = await uploadProfilePhoto(patient.email, profilePhoto);
+            patient.profilePhoto =  checkPhoto.Location;
+        }else{
+            const { height, weight, bloodGroup } = req.body; 
+            patient.height= height;
+            patient.weight= weight;
+            patient.bloodGroup= bloodGroup;
+        }
         await patient.save();
 
         if (!patient) {
-            return res.status(404).json({ message: "Kullanıcı bulunamadı." });
+            return new Response(404,"Error", "Kullanıcı bulunamadı.").error404(res);
         }
+            
+        const data = pf==1? patient.profilePhoto: " ";
+        return new Response(200, "Kullanıcı başarıyla güncellendi.", data).success(res);
 
-        console.log(req.session.userId);
-        res.status(200).json({ message: "Kullanıcı başarıyla güncellendi." });
-    } catch (error) {
-        res.status(500).json({ message: "Bir hata oluştu." });
-    }
+        } catch (error) {
+            return new Response(500,"Error", error.message).error500(res);
+        }
 }
 
 async function getPatientUser(req,res){

@@ -5,6 +5,7 @@ dotenv.config();
 
 async function uploadProfilePhoto(email, file){
     const yeniEmail = email.replace(/\.com$/, ".jpeg");
+    console.log(yeniEmail);
     const fileStream = fs.createReadStream(file.path);
     const uploadParams = {
         Bucket: process.env.AWS_BUCKET,
