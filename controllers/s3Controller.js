@@ -3,16 +3,27 @@ const {s3} = require('../config/aws');
 const dotenv = require('dotenv');
 dotenv.config();
 
-async function uploadProfilePhoto(email, file){
-    const yeniEmail = email.replace(/\.com$/, ".jpeg");
-    console.log(yeniEmail);
+async function uploadProfilePhoto(id, file){
     const fileStream = fs.createReadStream(file.path);
     const uploadParams = {
         Bucket: process.env.AWS_BUCKET,
         Body: fileStream,
-        Key: yeniEmail
+        Key: id
     }
     return s3.upload(uploadParams).promise();
 };
 
-module.exports = {uploadProfilePhoto}
+async function getProfilePhoto(key){
+    try {
+        const getParams = {
+            Bucket: process.env.AWS_BUCKET,
+            Key: key
+        };
+        const readableStream = await s3.getObject(getParams).createReadStream();
+        return readableStream;
+    } catch (error) {
+        console.log(error.message);
+    }
+};
+
+module.exports = {uploadProfilePhoto, getProfilePhoto}

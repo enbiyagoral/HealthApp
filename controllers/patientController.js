@@ -1,8 +1,8 @@
 const { Patient } = require('../models/User');
 const Appointment = require('../models/Appointments');
 const Response = require('../utils/response');
-const {uploadProfilePhoto} = require('../controllers/s3Controller');
-
+const {uploadProfilePhoto, getProfilePhoto } = require('../controllers/s3Controller');
+const {calculateAge, convertDate} = require('../utils/calculateAge');
 
 async function getAppointments(req,res){
     const appointments = await Appointment.find({
@@ -73,10 +73,11 @@ async function updatePatientUser(req,res){
             // S3'e fotoğraf yükleme
         if(pf){
             const profilePhoto = req.file;
-            const checkPhoto = await uploadProfilePhoto(patient.email, profilePhoto);
+            const checkPhoto = await uploadProfilePhoto(req.session.userId, profilePhoto);
             patient.profilePhoto =  checkPhoto.Location;
         }else{
-            const { height, weight, bloodGroup } = req.body; 
+            const { height, weight, bloodGroup, birthDate } = req.body;   
+            patient.birthDate = new Date(convertDate(birthDate));
             patient.height= height;
             patient.weight= weight;
             patient.bloodGroup= bloodGroup;
@@ -97,23 +98,29 @@ async function updatePatientUser(req,res){
 
 async function getPatientUser(req,res){
     try {
+        const gp = req.query.gp == "1"? true: false;
         const patient = await Patient.findById(req.session.userId);
-        const data = {
-            "fullName": patient.fullName,
-            "bloodGroup" : patient.bloodGroup,
-            "height": patient.height,
-            "weight": patient.weight,
-            "MassIndex": patient.MassIndex
+
+        if(gp){
+            const result = await getProfilePhoto(req.session.userId);
+            return new Response(200,"Kullanıcı getirildi", data = null).success(res,result);
+        }else{
+            const data = {
+                "fullName": patient.fullName,
+                "bloodGroup" : patient.bloodGroup,
+                "height": patient.height,
+                "weight": patient.weight,
+                "MassIndex": patient.MassIndex
+            }
+            if (!patient) {
+                return res.status(404).json({ message: "Kullanıcı bulunamadı." });
+            }
+            return new Response(200,"Kullanıcı getirildi", data).success(res);
         }
-        if (!patient) {
-            return res.status(404).json({ message: "Kullanıcı bulunamadı." });
-        }
-        return new Response(200,"Kullanıcı getirildi", data).success(res);
     } catch (error) {
         res.status(500).json({ message: "Bir hata oluştu." });
     }
-}
-
+};
 
 module.exports = { getAppointment, getAppointments, joinAppointment, leaveAppointment, updatePatientUser, getPatientUser};
 

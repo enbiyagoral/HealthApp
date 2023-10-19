@@ -5,7 +5,10 @@ class Response {
         this.data = data;
     };
 
-    success(res){
+    success(res, result=null){
+        if(result){
+            return result.pipe(res);
+        }
         return res.status(200).json({
             success : true,
             message : this.message ?? "Successful",

@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
-
+const {calculateAge} = require('../utils/calculateAge');
 
 const locationSchema = new Schema({
     city: String,
@@ -12,6 +12,7 @@ const locationSchema = new Schema({
 const userSchema = new Schema({
     name: String,
     surname: String,
+    birthDate : Date,
     email: {
         type: String,
         unique: true,
@@ -68,6 +69,13 @@ const patientSchema = new Schema({
 userSchema.virtual('fullName').get(function(){
     return this.name + ' ' + this.surname;
 });
+
+userSchema.virtual('age').get(function () {
+    if (!this.birthDate) {
+      return null;
+    }
+    return calculateAge(this.birthDate);
+  });
 
 patientSchema.virtual('MassIndex').get(function(){
     return (this.weight/((this.height/100)*(this.height/100))).toFixed(2);
