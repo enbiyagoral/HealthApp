@@ -83,13 +83,12 @@ async function updatePatientUser(req,res){
             patient.bloodGroup= bloodGroup;
         }
         await patient.save();
-
+        
         if (!patient) {
             return new Response(404,"Error", "Kullanıcı bulunamadı.").error404(res);
         }
             
-        const data = pf==1? patient.profilePhoto: " ";
-        return new Response(200, "Kullanıcı başarıyla güncellendi.", data).success(res);
+        return new Response(200, "Kullanıcı başarıyla güncellendi.").success(res);
 
         } catch (error) {
             return new Response(500,"Error", error.message).error500(res);
@@ -110,7 +109,8 @@ async function getPatientUser(req,res){
                 "bloodGroup" : patient.bloodGroup,
                 "height": patient.height,
                 "weight": patient.weight,
-                "MassIndex": patient.MassIndex
+                "MassIndex": patient.MassIndex,
+                "age": patient.age
             }
             if (!patient) {
                 return res.status(404).json({ message: "Kullanıcı bulunamadı." });
