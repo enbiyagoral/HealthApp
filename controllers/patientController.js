@@ -1,4 +1,4 @@
-const { Patient } = require('../models/User');
+const { Patient, Doctor } = require('../models/User');
 const Appointment = require('../models/Appointments');
 const Response = require('../utils/response');
 const {uploadProfilePhoto, getProfilePhoto } = require('../controllers/s3Controller');
@@ -7,7 +7,9 @@ const {calculateAge, convertDate} = require('../utils/calculateAge');
 async function getAppointments(req,res){
     const appointments = await Appointment.find({
         patient:req.session.userId,
-    }).populate('doctor patient','name email -__t');
+    }).populate('doctor patient','name specialization location email -__t -_id').sort({ date: 1 });;
+
+
     res.send(appointments); 
 };
 
@@ -20,8 +22,14 @@ async function getAppointment(req,res){
 };
 
 async function joinAppointment(req,res){
+    // const { doctorId } = req.body;
+    // const patient = await Patient.findById(req.session.userId);
+    // const doctor = await Doctor.findById(doctorId);
+    // const appointment = new Appointment({
+    //     doctor,
+        
+    // })
     const id = req.params.id;
-    const patient = await Patient.findById(req.session.userId);
     const appointment = await Appointment.findById(id);
     // Randevu tarafı:
     if(appointment.isAvailable == true){

@@ -33,7 +33,6 @@ async function register(req, res) {
     // // S3'e fotoğraf yükleme
     // const profilePhoto = req.file;
     // const checkPhoto = await uploadProfilePhoto(email, profilePhoto);
-
     try {
         let user;
 
