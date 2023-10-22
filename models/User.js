@@ -40,6 +40,10 @@ const doctorSchema = new Schema({
         enum: ['Junior Doctor', 'Senior Doctor', 'Consultant', 'Specialist', 'Chief Doctor'],
         default: 'Junior Doctor', 
     },
+    appointmentInterval: {
+        type: Number,
+        default: 10
+    },
     rate: {
         type: Number,
         default: 0,
