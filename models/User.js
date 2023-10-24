@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const {calculateAge} = require('../utils/calculateAge');
+const {calculateAvailableTimes} = require('../utils/calculateAppointments');
 
 const locationSchema = new Schema({
     city: String,
@@ -72,6 +73,10 @@ const patientSchema = new Schema({
 // Veritabanında fiiziksel yer kaplamaması için bir araya getirdiğim özellikler:
 userSchema.virtual('fullName').get(function(){
     return this.name + ' ' + this.surname;
+});
+
+doctorSchema.virtual('availibleTimes').get(function(){
+    return calculateAvailableTimes(this);
 });
 
 userSchema.virtual('age').get(function () {

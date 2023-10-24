@@ -30,9 +30,6 @@ async function register(req, res) {
         return new Response(400,check_Email.messages).error400(res);
     }
 
-    // // S3'e fotoğraf yükleme
-    // const profilePhoto = req.file;
-    // const checkPhoto = await uploadProfilePhoto(email, profilePhoto);
     try {
         let user;
 
@@ -43,7 +40,6 @@ async function register(req, res) {
                 email,
                 password,
                 specialization,
-                // profilePhoto: checkPhoto.Location,
                 iban,
                 location: {
                     city,
@@ -58,7 +54,6 @@ async function register(req, res) {
                 password,
                 // height,
                 // weight,
-                // profilePhoto: checkPhoto.Location,
                 // bloodGroup,
             });
         }
@@ -108,6 +103,5 @@ async function login(req, res) {
         
     }
 }
-
 
 module.exports = { register, login };
