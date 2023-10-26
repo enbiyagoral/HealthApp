@@ -8,7 +8,6 @@ async function createAppointment(req,res){
     const { restDay, startDay, endDay} = req.body;
     const doctor = await Doctor.findById(req.session.userId);
 
-    
     await appointment.save();
 
     const cas =  await appointment.populate('doctor', '-_id -iban -isVerify -__v  -__t -appointments');
@@ -17,7 +16,28 @@ async function createAppointment(req,res){
     await doctor.save();
     
     return new Response(201,'Randevu oluşturuldu!',cas).created(res);
-  };
+};
+
+async function setWorkingTime(req,res){
+  const {start, end} = req.body;
+  try {
+    
+    await Doctor.updateOne(
+      { _id: req.session.userId },
+      {
+        $set: {
+          'workingHours.start': start,
+          'workingHours.end': end
+        }
+      }
+    );
+
+    return res.json({ message: 'Çalışma saatleri başarıyla güncellendi.' });
+  } catch (err) {
+    return res.status(500).json({ error: 'Çalışma saatleri güncellenirken bir hata oluştu.' });
+  }
+
+};
 
 async function getAppointments(req,res){
     const appointments = await Appointment.find({
@@ -85,4 +105,4 @@ async function deleteAppointment(req, res) {
     }
 }
 
-module.exports = { createAppointment, getAppointments, getAppointment, updateAppointment, deleteAppointment};
+module.exports = { createAppointment, getAppointments, getAppointment, updateAppointment, deleteAppointment, setWorkingTime};

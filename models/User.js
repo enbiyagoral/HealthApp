@@ -9,6 +9,22 @@ const locationSchema = new Schema({
     hospitalName: String,
 });
 
+const workingTimeSchema = new Schema({
+    days: [{ 
+        type: Number, 
+        enum: [0, 1, 2, 3, 4, 5, 6],
+        default: [0,1,2,3,4]
+    }],
+    start: {
+        type: String,
+        default: "9"
+    },  
+    end: {
+        type: String,
+        default: "17"
+    }
+});
+
 
 const userSchema = new Schema({
     name: String,
@@ -48,6 +64,9 @@ const doctorSchema = new Schema({
     rate: {
         type: Number,
         default: 0,
+    },
+    workingHours: {
+        type: workingTimeSchema,
     },
     iban: String,
     location: {

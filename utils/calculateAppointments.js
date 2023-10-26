@@ -1,8 +1,8 @@
 function calculateAvailableTimes(doctor, days = 5) {
     const appointmentInterval = doctor.appointmentInterval;
     const availableTimes = [];
-    const workingHoursStart = 9;
-    const workingHoursEnd = 17;
+    const workingHoursStart = doctor.workingHours.start;
+    const workingHoursEnd = doctor.workingHours.end;
 
     let currentDate = new Date();
     const trDateTimeFormatter = new Intl.DateTimeFormat('en-US', { timeZone: 'Europe/Istanbul' });
