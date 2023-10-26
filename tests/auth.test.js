@@ -91,7 +91,6 @@ describe('login', () => {
       },
     };
     const res = await chai.request(server).post('/api/auth/login').send(fakeRequest);
-
     expect(res).to.have.status(401);
   });
 
@@ -105,8 +104,7 @@ describe('login', () => {
 
     const res = await chai.request(server).post('/api/auth/login').send(fakeRequest.body);
     expect(res.status).to.equal(200);
-
-
+  
   });
 
 });

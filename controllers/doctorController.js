@@ -2,15 +2,13 @@ const { Doctor } = require('../models/User');
 const Appointment = require('../models/Appointments');
 const Response = require('../utils/response');
 
+
+
 async function createAppointment(req,res){
-    const { name } = req.body;
+    const { restDay, startDay, endDay} = req.body;
     const doctor = await Doctor.findById(req.session.userId);
 
-    const appointment = new Appointment({
-        name: name,
-        doctor: doctor._id,
-    })
-
+    
     await appointment.save();
 
     const cas =  await appointment.populate('doctor', '-_id -iban -isVerify -__v  -__t -appointments');

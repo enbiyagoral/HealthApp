@@ -6,6 +6,8 @@ dotenv.config();
 const authRouter = require('./router/authRouter');
 const doctorRouter = require('./router/doctorRouter');
 const patientRouter = require('./router/patientRouter');
+const appointmentRouter= require('./router/appointmentRouter');
+
 const MongoStore = require('connect-mongo');
 
 const app = express();
@@ -47,6 +49,8 @@ if(nodeEnv !== 'test'){
 app.use('/api/auth',authRouter);
 app.use('/api/doctor',doctorRouter);
 app.use('/api/patient',patientRouter);
+app.use('/api/appointment',appointmentRouter);
+
 
 
 const port = process.env.PORT || 3000;
