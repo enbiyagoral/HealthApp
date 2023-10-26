@@ -59,7 +59,6 @@ async function register(req, res) {
         }
 
         await user.save();
-
         return new Response(201,'Kullanıcı oluşturuldu!').created(res);
         
     } catch (error) {       
