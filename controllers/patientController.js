@@ -3,6 +3,7 @@ const Appointment = require('../models/Appointments');
 const Response = require('../utils/response');
 const {uploadProfilePhoto, getProfilePhoto } = require('../controllers/s3Controller');
 const {convertDate} = require('../utils/calculateAge');
+const { client } = require('../config/redis');
 
 async function getAppointments(req,res){
     const appointments = await Appointment.find({
@@ -29,18 +30,25 @@ async function joinAppointment(req,res){
 
     let availibleTimes = doctor.availibleTimes;
     availibleTimes = availibleTimes.map((time)=> time.toISOString());
-    const isDateAvailable = availibleTimes.includes(date);
 
+    const isExists = await client.exists(`${doctor._id}`);
+
+    if(isExists==0){
+        await client.rPush(`${doctor._id}`, availibleTimes);
+        const expirationTimeInSeconds = 86400;    
+        await client.expire(`${doctor._id}`, expirationTimeInSeconds);    
+    }
+
+    const isDateAvailable = availibleTimes.includes(date); 
     if(!isDateAvailable){
         return res.send("Geçersiz tarih verisi girdiniz!");
     }
 
     const isAvailable = await Appointment.find({date}).count();
-
     if(isAvailable>0){
         return res.send("Randevu dolu!");
     };
-    
+
     const appointment = new Appointment({
         name: doctor.specialization,
         doctor,
@@ -51,25 +59,6 @@ async function joinAppointment(req,res){
 
     appointment.save();
     res.send(appointment);
-    // const id = req.params.id;
-    // const appointment = await Appointment.findById(id);
-    // // Randevu tarafı:
-    // if(appointment.isAvailable == true){
-    //     appointment.patient = patient;
-    //     appointment.isAvailable = false;
-    //     await appointment.save();
-    
-    //     // Hasta tarafı
-    //     patient.appointments.push(appointment);
-    //     await patient.save();
-    
-    //     const data = await appointment
-    //                     .populate('doctor patient','name -_id -__t ')
-                        
-    //     return res.send(data);
-    // }else{
-    //     return res.send("Randevu uygun değil");
-    // }
 };
 
 async function leaveAppointment(req,res){
