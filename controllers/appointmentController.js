@@ -4,9 +4,11 @@ const { Doctor } = require('../models/User');
 async function getAppointments(req, res) {
     const { filter, name, surname } = req.query; // spec
 
-    const filterConditions = {
-        specialization: filter
-    };
+    const filterConditions = {};
+
+    if (filter) {
+        filterConditions.specialization = filter
+    }
 
     if (name) {
         filterConditions.name = new RegExp(`.*${name}.*`, 'i');
@@ -25,4 +27,4 @@ async function getAppointments(req, res) {
     }
 }
 
-module.exports = { getAppointments };
+module.exports = { getAppointments };

@@ -11,7 +11,7 @@ Router.get('/appointments/:id', checkRole('Patient'), getAppointment);
 Router.post('/join', checkRole('Patient'), joinAppointment);
 Router.post('/leave/:id', checkRole('Patient'), leaveAppointment);
 Router.post('/update', upload.single('profilephoto'), checkRole('Patient'),  updatePatientUser);
-Router.get('/update', checkRole('Patient'), getPatientUser);
+Router.get('/profile', checkRole('Patient'), getPatientUser);
 
 
 

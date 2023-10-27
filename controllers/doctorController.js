@@ -19,16 +19,20 @@ async function createAppointment(req,res){
 };
 
 async function setWorkingTime(req,res){
-  const {start, end} = req.body;
+  const {days,start, end} = req.body;
   try {
+    const updateFields = {
+      'workingHours.start': start,
+      'workingHours.end': end,
+    }
+    if (days) {
+      updateFields['workingHours.days'] = days;
+    }
     
     await Doctor.updateOne(
       { _id: req.session.userId },
       {
-        $set: {
-          'workingHours.start': start,
-          'workingHours.end': end
-        }
+        $set: updateFields
       }
     );
 

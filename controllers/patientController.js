@@ -8,7 +8,7 @@ const { client } = require('../config/redis');
 async function getAppointments(req,res){
     const appointments = await Appointment.find({
         patient:req.session.userId,
-    }).populate('doctor patient','name specialization location email -__t -_id').sort({ date: 1 });;
+    }).populate('doctor patient','name specialization location email -__t -_id').sort({ date: 1 });
 
 
     res.send(appointments); 
@@ -57,7 +57,14 @@ async function joinAppointment(req,res){
         isAvailable: false,
     });
 
-    appointment.save();
+    await appointment.save();
+
+    doctor.appointments.push(appointment);
+    await doctor.save();
+
+    patient.appointments.push(appointment);
+    await patient.save();
+
     res.send(appointment);
 };
 
@@ -72,7 +79,7 @@ async function leaveAppointment(req,res){
         appointment.patient = null;
         appointment.date = null,
     
-        appointment.save();
+        await appointment.save();
     
         await Patient.findByIdAndUpdate(patient._id, {
             $pull: { appointments: appointment._id },
@@ -130,7 +137,8 @@ async function getPatientUser(req,res){
                 "height": patient.height,
                 "weight": patient.weight,
                 "MassIndex": patient.MassIndex,
-                "age": patient.age
+                "age": patient.age,
+                "appointments": patient.appointments
             }
             if (!patient) {
                 return res.status(404).json({ message: "Kullanıcı bulunamadı." });
