@@ -1,18 +1,20 @@
 const express = require('express');
 const Router = express.Router();
 const { 
-    createAppointment, 
     getAppointments, 
     getAppointment, 
     updateAppointment, 
     setWorkingTime,
     deleteAppointment,
-    setRestTime
+    setRestTime,
+    getProfile,
+    // updateProfile
 } = require('../controllers/doctorController');
 
 const checkRole = require('../middlewares/checkRole');
 
-Router.post('/create', checkRole('Doctor'), createAppointment);
+Router.get('/profile', checkRole('Doctor'), getProfile);
+// Router.post('/profile', checkRole('Doctor'), updateProfile);
 
 Router.get('/appointments', checkRole('Doctor'), getAppointments);
 Router.get('/appointments/:id', checkRole('Doctor'), getAppointment);

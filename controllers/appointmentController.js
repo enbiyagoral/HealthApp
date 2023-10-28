@@ -4,7 +4,7 @@ const { Doctor } = require('../models/User');
 async function getAppointments(req, res) {
     const { filter, name, surname } = req.query; // spec
     const page = parseInt(req.params.page);
-
+    
     const filterConditions = {};
 
     if (filter) {

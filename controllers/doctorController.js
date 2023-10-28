@@ -1,24 +1,47 @@
 const { Doctor } = require('../models/User');
 const Appointment = require('../models/Appointments');
 const Response = require('../utils/response');
+const {uploadProfilePhoto, getProfilePhoto } = require('../controllers/s3Controller');
 const { convertDate } = require('../utils/calculateAge');
 const { getDatesBetweenDates } = require('../utils/betweenDate.js');
 
 
 
-async function createAppointment(req,res){
-    const { restDay, startDay, endDay} = req.body;
-    const doctor = await Doctor.findById(req.session.userId);
 
-    await appointment.save();
-
-    const cas =  await appointment.populate('doctor', '-_id -iban -isVerify -__v  -__t -appointments');
-
-    doctor.appointments.push(appointment._id);
-    await doctor.save();
-    
-    return new Response(201,'Randevu oluşturuldu!',cas).created(res);
+async function getProfile(req,res){
+  const doctor = await Doctor.findById(req.session.userId);
+  return new Response(200, null, doctor).success(res);
 };
+
+// async function updateProfile(req,res){
+//   try {
+//       const pf = req.query.pf == "1"? true:false;
+//       const doctor = await Doctor.findById(req.session.userId);
+      
+//           // S3'e fotoğraf yükleme
+//       if(pf){
+//           const profilePhoto = req.file;
+//           const checkPhoto = await uploadProfilePhoto(req.session.userId, profilePhoto);
+//           doctor.profilePhoto =  checkPhoto.Location;
+//       }else{
+//           const { specialization, rank, iban, name, surname} = req.body;   
+//           patient.birthDate = new Date(convertDate(birthDate));
+//           patient.height= height;
+//           patient.weight= weight;
+//           patient.bloodGroup= bloodGroup;
+//       }
+//       await patient.save();
+      
+//       if (!patient) {
+//           return new Response(404,"Error", "Kullanıcı bulunamadı.").error404(res);
+//       }
+          
+//       return new Response(200, "Kullanıcı başarıyla güncellendi.").success(res);
+
+//       } catch (error) {
+//           return new Response(500,"Error", error.message).error500(res);
+//       }
+// }
 
 async function setWorkingTime(req,res){
   const {days,start, end, workingInterval} = req.body;
@@ -130,4 +153,4 @@ async function deleteAppointment(req, res) {
     }
 }
 
-module.exports = { createAppointment, getAppointments, getAppointment, updateAppointment, deleteAppointment, setWorkingTime, setRestTime};
+module.exports = { getProfile, getAppointments, getAppointment, updateAppointment, deleteAppointment, setWorkingTime, setRestTime};
