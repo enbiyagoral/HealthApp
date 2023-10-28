@@ -13,35 +13,37 @@ async function getProfile(req,res){
   return new Response(200, null, doctor).success(res);
 };
 
-// async function updateProfile(req,res){
-//   try {
-//       const pf = req.query.pf == "1"? true:false;
-//       const doctor = await Doctor.findById(req.session.userId);
-      
-//           // S3'e fotoğraf yükleme
-//       if(pf){
-//           const profilePhoto = req.file;
-//           const checkPhoto = await uploadProfilePhoto(req.session.userId, profilePhoto);
-//           doctor.profilePhoto =  checkPhoto.Location;
-//       }else{
-//           const { specialization, rank, iban, name, surname} = req.body;   
-//           patient.birthDate = new Date(convertDate(birthDate));
-//           patient.height= height;
-//           patient.weight= weight;
-//           patient.bloodGroup= bloodGroup;
-//       }
-//       await patient.save();
-      
-//       if (!patient) {
-//           return new Response(404,"Error", "Kullanıcı bulunamadı.").error404(res);
-//       }
-          
-//       return new Response(200, "Kullanıcı başarıyla güncellendi.").success(res);
+async function updateProfile(req,res){
+  try {
+      const pf = req.query.pf == "1"? true:false;
+      const doctor = await Doctor.findById(req.session.userId);
 
-//       } catch (error) {
-//           return new Response(500,"Error", error.message).error500(res);
-//       }
-// }
+      if (!doctor) {
+        return new Response(404,"Error", "Kullanıcı bulunamadı.").error404(res);
+      }
+      
+      // S3'e fotoğraf yükleme
+      if(pf){
+          const profilePhoto = req.file;
+          const checkPhoto = await uploadProfilePhoto(req.session.userId, profilePhoto);
+          doctor.profilePhoto =  checkPhoto.Location;
+      }else{
+          const { specialization, rank, iban, name, surname, about} = req.body; 
+          doctor.specialization = specialization;
+          doctor.rank = rank;
+          doctor.iban = iban;
+          doctor.about = about;
+          doctor.name = name;
+          doctor.surname = surname;
+      }
+      await doctor.save();
+      
+      return new Response(200, "Kullanıcı başarıyla güncellendi.").success(res);
+
+      } catch (error) {
+          return new Response(500,"Error", error.message).error500(res);
+      }
+}
 
 async function setWorkingTime(req,res){
   const {days,start, end, workingInterval} = req.body;
@@ -153,4 +155,4 @@ async function deleteAppointment(req, res) {
     }
 }
 
-module.exports = { getProfile, getAppointments, getAppointment, updateAppointment, deleteAppointment, setWorkingTime, setRestTime};
+module.exports = { getProfile, updateProfile, getAppointments, getAppointment, updateAppointment, deleteAppointment, setWorkingTime, setRestTime};

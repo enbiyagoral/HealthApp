@@ -8,13 +8,13 @@ const {
     deleteAppointment,
     setRestTime,
     getProfile,
-    // updateProfile
+    updateProfile
 } = require('../controllers/doctorController');
 
 const checkRole = require('../middlewares/checkRole');
 
 Router.get('/profile', checkRole('Doctor'), getProfile);
-// Router.post('/profile', checkRole('Doctor'), updateProfile);
+Router.post('/profile', checkRole('Doctor'), updateProfile);
 
 Router.get('/appointments', checkRole('Doctor'), getAppointments);
 Router.get('/appointments/:id', checkRole('Doctor'), getAppointment);

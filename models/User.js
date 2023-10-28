@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const {calculateAge} = require('../utils/calculateAge');
 const {calculateAvailableTimes} = require('../utils/calculateAppointments');
-const { number } = require('joi');
+const { number, string } = require('joi');
 
 const locationSchema = new Schema({
     city: String,
@@ -63,6 +63,7 @@ const doctorSchema = new Schema({
         type: String,
         required: true,
     },
+    about: String,
     rank: {
         type: String,
         enum: ['Junior Doctor', 'Senior Doctor', 'Consultant', 'Specialist', 'Chief Doctor'],
