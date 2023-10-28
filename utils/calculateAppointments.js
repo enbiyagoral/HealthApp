@@ -1,8 +1,12 @@
 function calculateAvailableTimes(doctor, days = 5) {
-    const appointmentInterval = doctor.appointmentInterval;
+    const workingInterval = doctor.workingHours.workingInterval;
     const workingDays = doctor.workingHours.days;
     const workingHoursStart = doctor.workingHours.start;
     const workingHoursEnd = doctor.workingHours.end;
+
+    const lunchBreakStart = 12;
+    const lunchBreakEnd = 13;
+
     const availableTimes = [];
 
     let currentDate = new Date();
@@ -18,12 +22,12 @@ function calculateAvailableTimes(doctor, days = 5) {
         }
 
         while (currentDate.getUTCHours() < workingHoursEnd) {
-            if (currentDate.getUTCHours() >= 12 && currentDate.getUTCHours() < 13) {
-                currentDate.setUTCHours(13, 0, 0, 0);
+            if (currentDate.getUTCHours() >= lunchBreakStart && currentDate.getUTCHours() < lunchBreakEnd) {
+                currentDate.setUTCHours(lunchBreakEnd, 0, 0, 0);
                 continue;
             }
             availableTimes.push(new Date(currentDate));
-            currentDate.setUTCMinutes(currentDate.getUTCMinutes() + appointmentInterval);
+            currentDate.setUTCMinutes(currentDate.getUTCMinutes() + workingInterval);
         }
 
         currentDate.setUTCDate(currentDate.getUTCDate() + 1);
@@ -31,7 +35,10 @@ function calculateAvailableTimes(doctor, days = 5) {
 
         i++;
     }
+
+    availableTimes
     return availableTimes;
 }
+
 
 module.exports = { calculateAvailableTimes };

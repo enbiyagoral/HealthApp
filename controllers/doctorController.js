@@ -1,6 +1,8 @@
 const { Doctor } = require('../models/User');
 const Appointment = require('../models/Appointments');
 const Response = require('../utils/response');
+const { convertDate } = require('../utils/calculateAge');
+const { getDatesBetweenDates } = require('../utils/betweenDate.js');
 
 
 
@@ -19,12 +21,14 @@ async function createAppointment(req,res){
 };
 
 async function setWorkingTime(req,res){
-  const {days,start, end} = req.body;
+  const {days,start, end, workingInterval} = req.body;
   try {
     const updateFields = {
       'workingHours.start': start,
       'workingHours.end': end,
+      'workingHours.workingInterval':workingInterval
     }
+    
     if (days) {
       updateFields['workingHours.days'] = days;
     }
@@ -41,6 +45,23 @@ async function setWorkingTime(req,res){
     return res.status(500).json({ error: 'Çalışma saatleri güncellenirken bir hata oluştu.' });
   }
 
+};
+
+async function setRestTime(req,res){
+  const {startDate, endDate} = req.body;
+  const doctor = await Doctor.findById(req.session.userId);
+
+  const converstartDate = new Date(convertDate(startDate));
+  const convertendDate = new Date(convertDate(endDate));
+
+  const datesBetween = getDatesBetweenDates(converstartDate,convertendDate);
+  datesBetween.forEach(date => {
+    doctor.restDays.restDates.push(date);
+  });
+  doctor.restDays.totalDays += datesBetween.length;
+  
+  await doctor.save();
+  return new Response(200,"Başarıyla kaydedildi", doctor).success(res);
 };
 
 async function getAppointments(req,res){
@@ -109,4 +130,4 @@ async function deleteAppointment(req, res) {
     }
 }
 
-module.exports = { createAppointment, getAppointments, getAppointment, updateAppointment, deleteAppointment, setWorkingTime};
+module.exports = { createAppointment, getAppointments, getAppointment, updateAppointment, deleteAppointment, setWorkingTime, setRestTime};

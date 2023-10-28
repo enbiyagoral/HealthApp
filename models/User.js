@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const {calculateAge} = require('../utils/calculateAge');
 const {calculateAvailableTimes} = require('../utils/calculateAppointments');
+const { number } = require('joi');
 
 const locationSchema = new Schema({
     city: String,
@@ -22,9 +23,19 @@ const workingTimeSchema = new Schema({
     end: {
         type: String,
         default: "17"
+    },
+    workingInterval:{
+        type: Number,
+        default: 10
     }
 });
 
+const restTimeSchema = new Schema({
+    totalDays: Number,
+    restDates: [{
+        type: Date
+    }]
+})
 
 const userSchema = new Schema({
     name: String,
@@ -57,10 +68,6 @@ const doctorSchema = new Schema({
         enum: ['Junior Doctor', 'Senior Doctor', 'Consultant', 'Specialist', 'Chief Doctor'],
         default: 'Junior Doctor', 
     },
-    appointmentInterval: {
-        type: Number,
-        default: 10
-    },
     rate: {
         type: Number,
         default: 0,
@@ -72,6 +79,13 @@ const doctorSchema = new Schema({
     location: {
         type: locationSchema,
         required:true
+    },
+    restDays: {
+        type: restTimeSchema,
+    },
+    isRest: {
+        type: Boolean,
+        default: false
     },
     isVerify: {
         type: Boolean,

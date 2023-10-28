@@ -103,4 +103,15 @@ async function login(req, res) {
     }
 }
 
-module.exports = { register, login };
+async function logout(req,res){
+    req.session.destroy(err => {
+        if (err) {
+            console.error(err);
+        } else {
+            console.log("Kullanıcı oturumu sonlandırıldı.");
+        }
+        res.redirect('/api/auth/login'); 
+    });
+}
+
+module.exports = { register, login, logout };

@@ -3,6 +3,8 @@ const Appointment = require('../models/Appointments');
 const Response = require('../utils/response');
 const {uploadProfilePhoto, getProfilePhoto } = require('../controllers/s3Controller');
 const {convertDate} = require('../utils/calculateAge');
+const {isRestDay} = require('../utils/isRestDay');
+
 const { client } = require('../config/redis');
 
 async function getAppointments(req,res){
@@ -27,8 +29,20 @@ async function joinAppointment(req,res){
 
     const patient = await Patient.findById(req.session.userId);
     const doctor = await Doctor.findById(doctorId);
+    
 
+    if(doctor.isRest){
+        return new Response(400,"Doktor İzinde").error400(res);
+    };
+
+    const restDates = doctor.restDays.restDates;
     let availibleTimes = doctor.availibleTimes;
+    const isRest = isRestDay(restDates, date);
+
+    if(isRest){
+        return new Response(200, "Doktor İzinde").success(res);
+    }
+
     availibleTimes = availibleTimes.map((time)=> time.toISOString());
 
     const isExists = await client.exists(`${doctor._id}`);
@@ -38,7 +52,7 @@ async function joinAppointment(req,res){
         const expirationTimeInSeconds = 86400;    
         await client.expire(`${doctor._id}`, expirationTimeInSeconds);    
     }
-
+    
     const isDateAvailable = availibleTimes.includes(date); 
     if(!isDateAvailable){
         return res.send("Geçersiz tarih verisi girdiniz!");
