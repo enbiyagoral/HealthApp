@@ -1,10 +1,14 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const otpGenerator = require('otp-generator')
 const {uploadProfilePhoto} = require('../controllers/s3Controller');
+const { client } = require('../config/redis');
 
-const {Doctor, Patient} = require('../models/User');
+const {Doctor, Patient, User} = require('../models/User');
 const checkEmail = require('../utils/checkEmail');
+const {sendMail} = require('../utils/sendMail');
 const Response = require('../utils/response');
+
 
 async function register(req, res) {
     const role = req.query.role === 'doctor' ? 'doctor' : 'patient';
@@ -97,10 +101,13 @@ async function login(req, res) {
             userId : user._id
         }, process.env.JWT_PRIVATE_KEY);
 
-        
-        // req.session.loggedIn = true;
-        // req.session.userRole = user.__t;
-        // req.session.userId = user._id;
+        if(!user.isVerify){
+            const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false, lowerCaseAlphabets:false});
+            await client.set(`otp-${user.email}`,otp);
+            sendMail(user.email, otp);
+
+            return res.redirect(`/api/auth/verify/${user._id}`);
+        }
 
         return new Response(200, "Giriş başarılı!", token).success(res);
         
@@ -122,4 +129,20 @@ async function logout(req,res){
     });
 }
 
-module.exports = { register, login, logout };
+async function verifyOTP(req,res){
+    const id = req.params.id;
+    const user = await User.findById(id);
+    const {verifyCode} = req.body;
+
+    const code = await client.get(`otp-${user.email}`);
+    if(code === verifyCode){
+        user.isVerify = true;
+        await user.save();
+        await client.del(`otp-${user.email}`);
+        return new Response(200, "Doğrulama Başarılı").success(res);
+    }else{
+        return new Response(403).unauthorized(res);
+    }
+};
+
+module.exports = { register, login, verifyOTP,logout };
