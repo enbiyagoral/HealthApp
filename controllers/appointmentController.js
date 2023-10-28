@@ -3,6 +3,7 @@ const { Doctor } = require('../models/User');
 
 async function getAppointments(req, res) {
     const { filter, name, surname } = req.query; // spec
+    const page = parseInt(req.params.page);
 
     const filterConditions = {};
 
@@ -19,7 +20,17 @@ async function getAppointments(req, res) {
     }
 
     try {
-        const doctors = await Doctor.find(filterConditions).select("-__v -email -iban");
+        const perPage = 10;
+        const skip = (page-1) * perPage;
+        
+        const doctors = await Doctor.find(filterConditions)
+            .select("-__v -email -iban")            
+            .skip(skip)
+            .limit(perPage)
+
+        if(doctors.length==0){
+            return new Response(404, null, null).error404(res);
+        }
         return new Response(200, null, doctors).success(res);
     } catch (error) {
         console.error(error);
