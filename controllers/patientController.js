@@ -9,7 +9,7 @@ const { client } = require('../config/redis');
 
 async function getAppointments(req,res){
     const appointments = await Appointment.find({
-        patient:req.session.userId,
+        patient:req.user.userId,
     }).populate('doctor patient','name specialization location email -__t -_id').sort({ date: 1 });
 
 
@@ -27,7 +27,7 @@ async function getAppointment(req,res){
 async function joinAppointment(req,res){
     const { doctorId, date } = req.body;
 
-    const patient = await Patient.findById(req.session.userId);
+    const patient = await Patient.findById(req.user.userId);
     const doctor = await Doctor.findById(doctorId);
     
 
@@ -84,12 +84,12 @@ async function joinAppointment(req,res){
 
 async function leaveAppointment(req,res){
     const id = req.params.id;
-    const patient = await Patient.findById(req.session.userId);
+    const patient = await Patient.findById(req.user.userId);
     const appointment = await Appointment.findById(id);
     // hasta tarafı:
     if(appointment.patient != null){
         appointment.isAvailable = true;
-        appointment.patient.equals(req.session.userId);
+        appointment.patient.equals(req.user.userId);
         appointment.patient = null;
         appointment.date = null,
     
@@ -109,12 +109,12 @@ async function leaveAppointment(req,res){
 async function updatePatientUser(req,res){
     try {
         const pf = req.query.pf == "1"? true:false;
-        const patient = await Patient.findById(req.session.userId);
+        const patient = await Patient.findById(req.user.userId);
         
             // S3'e fotoğraf yükleme
         if(pf){
             const profilePhoto = req.file;
-            const checkPhoto = await uploadProfilePhoto(req.session.userId, profilePhoto);
+            const checkPhoto = await uploadProfilePhoto(req.user.userId, profilePhoto);
             patient.profilePhoto =  checkPhoto.Location;
         }else{
             const { height, weight, bloodGroup, birthDate } = req.body;   
@@ -139,10 +139,10 @@ async function updatePatientUser(req,res){
 async function getPatientUser(req,res){
     try {
         const gp = req.query.gp == "1"? true: false;
-        const patient = await Patient.findById(req.session.userId);
+        const patient = await Patient.findById(req.user.userId);
 
         if(gp){
-            const result = await getProfilePhoto(req.session.userId);
+            const result = await getProfilePhoto(req.user.userId);
             return new Response(200,"Kullanıcı getirildi", data = null).success(res,result);
         }else{
             const data = {

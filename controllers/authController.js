@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const {uploadProfilePhoto} = require('../controllers/s3Controller');
 
 const {Doctor, Patient} = require('../models/User');
@@ -90,11 +91,18 @@ async function login(req, res) {
 
         }
 
-        req.session.loggedIn = true;
-        req.session.userRole = user.__t;
-        req.session.userId = user._id;
+        const token = jwt.sign({
+            loggedIn : true,
+            userRole : user.__t,
+            userId : user._id
+        }, process.env.JWT_PRIVATE_KEY);
 
-        return new Response(200, "Giriş başarılı!").success(res);
+        
+        // req.session.loggedIn = true;
+        // req.session.userRole = user.__t;
+        // req.session.userId = user._id;
+
+        return new Response(200, "Giriş başarılı!", token).success(res);
         
     } catch (error) {
 
