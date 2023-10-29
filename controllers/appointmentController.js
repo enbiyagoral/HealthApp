@@ -46,7 +46,7 @@ async function getAppointments(req, res) {
             .sort(bySort)         
             .skip(skip)
             .limit(perPage)
-        doctors
+
         if(doctors.length==0){
             return new Response(404, null, null).error404(res);
         }

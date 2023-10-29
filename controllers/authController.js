@@ -102,11 +102,8 @@ async function login(req, res) {
         }, process.env.JWT_PRIVATE_KEY);
 
         if(!user.isVerify){
-            const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false, lowerCaseAlphabets:false});
-            await client.set(`otp-${user.email}`,otp);
-            sendMail(user.email, otp);
 
-            return res.redirect(`/api/auth/verify/${user._id}`);
+            return res.redirect(`/api/auth/generate-otp/${user._id}`);
         }
 
         return new Response(200, "Giriş başarılı!", token).success(res);
@@ -144,5 +141,13 @@ async function verifyOTP(req,res){
         return new Response(403).unauthorized(res);
     }
 };
+async function generateOTP(req,res){
+    const id = req.params.id;
+    const user = await User.findById(id);
+    const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false, lowerCaseAlphabets:false});
+    sendMail(user.email, otp);
+    await client.set(`otp-${user.email}`,otp);
+    return new Response(200, "OTP Gönderildi!").success(res);
+};
 
-module.exports = { register, login, verifyOTP,logout };
+module.exports = { register, login, verifyOTP,generateOTP, logout };
