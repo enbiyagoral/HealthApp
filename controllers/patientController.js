@@ -105,20 +105,15 @@ async function leaveAppointment(req,res){
     }
     
 };
-async function updateProfilePhoto(req,res){
+async function getProfilePhoto(req,res){
     try {
-        console.log(req.user);
         const patient = await Patient.findById(req.user.userId);
+
         if (!patient) {
             return new Response(404,"Error", "Kullanıcı bulunamadı.").error404(res);
         }
-
-        const profilePhoto = req.file;
-        const checkPhoto = await uploadProfilePhoto(req.user.userId, profilePhoto);
-        patient.profilePhoto =  checkPhoto.Location;
-        await patient.save();
-            
-        return new Response(200, "Profil fotoğrafı yüklendi!").success(res);
+      
+        return new Response(200, null, patient.profilePhoto).success(res);
 
         } catch (error) {
             return new Response(500,"Error", error.message).error500(res);
