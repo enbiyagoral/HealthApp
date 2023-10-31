@@ -57,9 +57,6 @@ async function register(req, res) {
                 surname,
                 email,
                 password,
-                // height,
-                // weight,
-                // bloodGroup,
             });
         }
 
@@ -101,6 +98,7 @@ async function login(req, res) {
             userId : user._id
         }, process.env.JWT_PRIVATE_KEY);
 
+        console.log(user.isVerify);
         if(!user.isVerify){
 
             return res.redirect(`/api/auth/generate-otp/${user._id}`);

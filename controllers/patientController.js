@@ -105,36 +105,52 @@ async function leaveAppointment(req,res){
     }
     
 };
-
-async function updatePatientUser(req,res){
+async function updateProfilePhoto(req,res){
     try {
-        const pf = req.query.pf == "1"? true:false;
+        console.log(req.user);
         const patient = await Patient.findById(req.user.userId);
-        
-            // S3'e fotoğraf yükleme
-        if(pf){
-            const profilePhoto = req.file;
-            const checkPhoto = await uploadProfilePhoto(req.user.userId, profilePhoto);
-            patient.profilePhoto =  checkPhoto.Location;
-        }else{
-            const { height, weight, bloodGroup, birthDate } = req.body;   
-            patient.birthDate = new Date(convertDate(birthDate));
-            patient.height= height;
-            patient.weight= weight;
-            patient.bloodGroup= bloodGroup;
-        }
-        await patient.save();
-        
         if (!patient) {
             return new Response(404,"Error", "Kullanıcı bulunamadı.").error404(res);
         }
+
+        const profilePhoto = req.file;
+        const checkPhoto = await uploadProfilePhoto(req.user.userId, profilePhoto);
+        patient.profilePhoto =  checkPhoto.Location;
+        await patient.save();
             
+        return new Response(200, "Profil fotoğrafı yüklendi!").success(res);
+
+        } catch (error) {
+            return new Response(500,"Error", error.message).error500(res);
+        }
+}
+
+async function updatePatientUser(req,res){
+    try {
+        const { name, surname, height, weight, bloodGroup, birthDate } = req.body;   
+        const patient = await Patient.findById(req.user.userId);
+
+        if (!patient) {
+            return new Response(404,"Error", "Kullanıcı bulunamadı.").error404(res);
+        }
+
+        patient.birthDate = new Date(convertDate(birthDate));
+        patient.name= name;
+        patient.surname= surname;
+        patient.height= height;
+        patient.weight= weight;
+        patient.bloodGroup= bloodGroup;
+
+        await patient.save();
+          
         return new Response(200, "Kullanıcı başarıyla güncellendi.").success(res);
 
         } catch (error) {
             return new Response(500,"Error", error.message).error500(res);
         }
 }
+
+
 
 async function getPatientUser(req,res){
     try {
@@ -164,5 +180,5 @@ async function getPatientUser(req,res){
     }
 };
 
-module.exports = { getAppointment, getAppointments, joinAppointment, leaveAppointment, updatePatientUser, getPatientUser};
+module.exports = { getAppointment, getAppointments, joinAppointment, leaveAppointment, updatePatientUser, updateProfilePhoto,getPatientUser};
 

@@ -56,6 +56,10 @@ const userSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Appointment',
     }],
+    isVerify: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const doctorSchema = new Schema({
@@ -87,10 +91,6 @@ const doctorSchema = new Schema({
     isRest: {
         type: Boolean,
         default: false
-    },
-    isVerify: {
-        type: Boolean,
-        default: false,
     },
 });
 
