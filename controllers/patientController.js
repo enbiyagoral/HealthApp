@@ -1,19 +1,31 @@
 const { Patient, Doctor } = require('../models/User');
 const Appointment = require('../models/Appointments');
 const Response = require('../utils/response');
-const {uploadProfilePhoto, getProfilePhoto } = require('../controllers/s3Controller');
+const {uploadProfilePhoto } = require('../controllers/s3Controller');
 const {convertDate} = require('../utils/calculateAge');
 const {isRestDay} = require('../utils/isRestDay');
 
 const { client } = require('../config/redis');
 
 async function getAppointments(req,res){
+    const latest = req.query.latest === "1" ? true : false;
+    console.log(latest);
+    console.log(req.user.userId);
+    
+    if(latest){
+        const lastAppointment = await Appointment.find({
+            patient:req.user.userId,
+        }).populate('doctor patient','name specialization location email -__t -_id').sort({ date: -1 }).limit(1).lean();
+
+        return new Response(200, "Son randevu getirildi!", lastAppointment).success(res);
+    }
+
     const appointments = await Appointment.find({
         patient:req.user.userId,
     }).populate('doctor patient','name specialization location email -__t -_id').sort({ date: 1 });
 
 
-    res.send(appointments); 
+    return new Response(200, "Tüm randevular getirildi!", appointments).success(res);
 };
 
 async function getAppointment(req,res){
@@ -23,6 +35,7 @@ async function getAppointment(req,res){
     }).populate('doctor patient','name email -__t');
     res.send(appointment); 
 };
+
 
 async function joinAppointment(req,res){
     const { doctorId, date } = req.body;
@@ -175,7 +188,7 @@ async function getPatientUser(req,res){
         const patient = await Patient.findById(req.user.userId);
 
         if(gp){
-            const result = await getProfilePhoto(req.user.userId);
+            // const result = await getProfilePhoto(req.user.userId);
             return new Response(200,"Kullanıcı getirildi", data = null).success(res,result);
         }else{
             const data = {

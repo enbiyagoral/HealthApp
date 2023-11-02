@@ -35,7 +35,6 @@ function calculateAvailableTimes(doctor, days = 5) {
 
         i++;
     }
-
     return availableTimes;
 }
 
