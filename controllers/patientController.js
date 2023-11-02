@@ -9,8 +9,7 @@ const { client } = require('../config/redis');
 
 async function getAppointments(req,res){
     const latest = req.query.latest === "1" ? true : false;
-    console.log(latest);
-    console.log(req.user.userId);
+    
     
     if(latest){
         const lastAppointment = await Appointment.find({
@@ -184,14 +183,23 @@ async function updatePatientUser(req,res){
 
 async function getPatientUser(req,res){
     try {
-        const gp = req.query.gp == "1"? true: false;
-        const patient = await Patient.findById(req.user.userId);
+        const id = req.params.id;
 
-        if(gp){
-            // const result = await getProfilePhoto(req.user.userId);
-            return new Response(200,"Kullanıcı getirildi", data = null).success(res,result);
-        }else{
-            const data = {
+        if(id){
+            const doctor = await Doctor.findById(req.params.id);
+            if(!doctor){
+                return res.status(404).json({ message: "Kullanıcı bulunamadı." }); 
+            }
+            return new Response(200,"Kullanıcı getirildi", doctor).success(res);
+        }
+
+        const patient = await Patient.findById(req.user.userId);
+        if (!patient) {
+            
+
+        }
+
+        const data = {
                 "fullName": patient.fullName,
                 "bloodGroup" : patient.bloodGroup,
                 "height": patient.height,
@@ -199,16 +207,16 @@ async function getPatientUser(req,res){
                 "MassIndex": patient.MassIndex,
                 "age": patient.age,
                 "appointments": patient.appointments
-            }
-            if (!patient) {
-                return res.status(404).json({ message: "Kullanıcı bulunamadı." });
-            }
-            return new Response(200,"Kullanıcı getirildi", data).success(res);
         }
+        
+
+        return new Response(200,"Kullanıcı getirildi", data).success(res);
+
     } catch (error) {
         res.status(500).json({ message: "Bir hata oluştu." });
     }
 };
+
 
 module.exports = { getAppointment, getAppointments, joinAppointment, leaveAppointment, updatePatientUser, getProfilePhoto,updateProfilePhoto,getPatientUser};
 

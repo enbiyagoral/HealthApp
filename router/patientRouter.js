@@ -14,7 +14,8 @@ Router.post('/update', checkRole('Patient'), updatePatientUser );
 Router.post('/update-profile-photo', checkRole('Patient'), upload.single('profilephoto'), updateProfilePhoto)
 Router.get('/profile-photo', checkRole('Patient'), getProfilePhoto)
 
-Router.get('/profile', checkRole('Patient'), getPatientUser);
+Router.get('/profile/', checkRole('Patient'), getPatientUser);
+Router.get('/profile/:id', checkRole('Patient'), getPatientUser);
 
 
 
