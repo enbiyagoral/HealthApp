@@ -5,10 +5,13 @@ dotenv.config();
 
 async function uploadProfilePhoto(id, file){
     const fileStream = fs.createReadStream(file.path);
+    const keyString = `${id}.jpeg`;
+    
     const uploadParams = {
         Bucket: process.env.AWS_BUCKET,
         Body: fileStream,
-        Key: id
+        Key: keyString,
+        ContentType: 'image/jpeg'
     }
     return s3.upload(uploadParams).promise();
 };

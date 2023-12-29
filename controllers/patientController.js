@@ -1,19 +1,30 @@
 const { Patient, Doctor } = require('../models/User');
 const Appointment = require('../models/Appointments');
 const Response = require('../utils/response');
-const {uploadProfilePhoto, getProfilePhoto } = require('../controllers/s3Controller');
+const {uploadProfilePhoto } = require('../controllers/s3Controller');
 const {convertDate} = require('../utils/calculateAge');
 const {isRestDay} = require('../utils/isRestDay');
 
 const { client } = require('../config/redis');
 
 async function getAppointments(req,res){
+    const latest = req.query.latest === "1" ? true : false;
+    
+    
+    if(latest){
+        const lastAppointment = await Appointment.find({
+            patient:req.user.userId,
+        }).populate('doctor patient','name specialization location email -__t -_id').sort({ date: -1 }).limit(1).lean();
+
+        return new Response(200, "Son randevu getirildi!", lastAppointment).success(res);
+    }
+
     const appointments = await Appointment.find({
-        patient:req.session.userId,
+        patient:req.user.userId,
     }).populate('doctor patient','name specialization location email -__t -_id').sort({ date: 1 });
 
 
-    res.send(appointments); 
+    return new Response(200, "Tüm randevular getirildi!", appointments).success(res);
 };
 
 async function getAppointment(req,res){
@@ -24,10 +35,11 @@ async function getAppointment(req,res){
     res.send(appointment); 
 };
 
+
 async function joinAppointment(req,res){
     const { doctorId, date } = req.body;
 
-    const patient = await Patient.findById(req.session.userId);
+    const patient = await Patient.findById(req.user.userId);
     const doctor = await Doctor.findById(doctorId);
     
 
@@ -84,12 +96,12 @@ async function joinAppointment(req,res){
 
 async function leaveAppointment(req,res){
     const id = req.params.id;
-    const patient = await Patient.findById(req.session.userId);
+    const patient = await Patient.findById(req.user.userId);
     const appointment = await Appointment.findById(id);
     // hasta tarafı:
     if(appointment.patient != null){
         appointment.isAvailable = true;
-        appointment.patient.equals(req.session.userId);
+        appointment.patient.equals(req.user.userId);
         appointment.patient = null;
         appointment.date = null,
     
@@ -106,29 +118,60 @@ async function leaveAppointment(req,res){
     
 };
 
-async function updatePatientUser(req,res){
+async function getProfilePhoto(req,res){
     try {
-        const pf = req.query.pf == "1"? true:false;
-        const patient = await Patient.findById(req.session.userId);
-        
-            // S3'e fotoğraf yükleme
-        if(pf){
-            const profilePhoto = req.file;
-            const checkPhoto = await uploadProfilePhoto(req.session.userId, profilePhoto);
-            patient.profilePhoto =  checkPhoto.Location;
-        }else{
-            const { height, weight, bloodGroup, birthDate } = req.body;   
-            patient.birthDate = new Date(convertDate(birthDate));
-            patient.height= height;
-            patient.weight= weight;
-            patient.bloodGroup= bloodGroup;
-        }
-        await patient.save();
-        
+        const patient = await Patient.findById(req.user.userId);
+
         if (!patient) {
             return new Response(404,"Error", "Kullanıcı bulunamadı.").error404(res);
         }
+      
+        return new Response(200, null, patient.profilePhoto).success(res);
+
+        } catch (error) {
+            return new Response(500,"Error", error.message).error500(res);
+        }
+}
+
+
+async function updateProfilePhoto(req,res){
+    try {
+        console.log(req.user);
+        const patient = await Patient.findById(req.user.userId);
+        if (!patient) {
+            return new Response(404,"Error", "Kullanıcı bulunamadı.").error404(res);
+        }
+
+        const profilePhoto = req.file;
+        const checkPhoto = await uploadProfilePhoto(req.user.userId, profilePhoto);
+        patient.profilePhoto =  checkPhoto.Location;
+        await patient.save();
             
+        return new Response(200, "Profil fotoğrafı yüklendi!", patient.profilePhoto).success(res);
+
+        } catch (error) {
+            return new Response(500,"Error", error.message).error500(res);
+        }
+}
+
+async function updatePatientUser(req,res){
+    try {
+        const { name, surname, height, weight, bloodGroup, birthDate } = req.body;   
+        const patient = await Patient.findById(req.user.userId);
+
+        if (!patient) {
+            return new Response(404,"Error", "Kullanıcı bulunamadı.").error404(res);
+        }
+
+        patient.birthDate = new Date(convertDate(birthDate));
+        patient.name= name;
+        patient.surname= surname;
+        patient.height= height;
+        patient.weight= weight;
+        patient.bloodGroup= bloodGroup;
+
+        await patient.save();
+          
         return new Response(200, "Kullanıcı başarıyla güncellendi.").success(res);
 
         } catch (error) {
@@ -136,16 +179,27 @@ async function updatePatientUser(req,res){
         }
 }
 
+
+
 async function getPatientUser(req,res){
     try {
-        const gp = req.query.gp == "1"? true: false;
-        const patient = await Patient.findById(req.session.userId);
+        const id = req.params.id;
 
-        if(gp){
-            const result = await getProfilePhoto(req.session.userId);
-            return new Response(200,"Kullanıcı getirildi", data = null).success(res,result);
-        }else{
-            const data = {
+        if(id){
+            const doctor = await Doctor.findById(req.params.id);
+            if(!doctor){
+                return res.status(404).json({ message: "Kullanıcı bulunamadı." }); 
+            }
+            return new Response(200,"Kullanıcı getirildi", doctor).success(res);
+        }
+
+        const patient = await Patient.findById(req.user.userId);
+        if (!patient) {
+            
+
+        }
+
+        const data = {
                 "fullName": patient.fullName,
                 "bloodGroup" : patient.bloodGroup,
                 "height": patient.height,
@@ -153,16 +207,16 @@ async function getPatientUser(req,res){
                 "MassIndex": patient.MassIndex,
                 "age": patient.age,
                 "appointments": patient.appointments
-            }
-            if (!patient) {
-                return res.status(404).json({ message: "Kullanıcı bulunamadı." });
-            }
-            return new Response(200,"Kullanıcı getirildi", data).success(res);
         }
+        
+
+        return new Response(200,"Kullanıcı getirildi", data).success(res);
+
     } catch (error) {
         res.status(500).json({ message: "Bir hata oluştu." });
     }
 };
 
-module.exports = { getAppointment, getAppointments, joinAppointment, leaveAppointment, updatePatientUser, getPatientUser};
+
+module.exports = { getAppointment, getAppointments, joinAppointment, leaveAppointment, updatePatientUser, getProfilePhoto,updateProfilePhoto,getPatientUser};
 

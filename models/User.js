@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const {calculateAge} = require('../utils/calculateAge');
 const {calculateAvailableTimes} = require('../utils/calculateAppointments');
-const { number } = require('joi');
+const { number, string } = require('joi');
 
 const locationSchema = new Schema({
     city: String,
@@ -56,6 +56,10 @@ const userSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Appointment',
     }],
+    isVerify: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const doctorSchema = new Schema({
@@ -63,6 +67,7 @@ const doctorSchema = new Schema({
         type: String,
         required: true,
     },
+    about: String,
     rank: {
         type: String,
         enum: ['Junior Doctor', 'Senior Doctor', 'Consultant', 'Specialist', 'Chief Doctor'],
@@ -86,10 +91,6 @@ const doctorSchema = new Schema({
     isRest: {
         type: Boolean,
         default: false
-    },
-    isVerify: {
-        type: Boolean,
-        default: false,
     },
 });
 

@@ -2,10 +2,12 @@ const Response = require('../utils/response');
 const { Doctor } = require('../models/User');
 
 async function getAppointments(req, res) {
-    const { filter, name, surname } = req.query; // spec
+    const { filter, name, surname, city, hospitalName, sort} = req.query; // spec
     const page = parseInt(req.params.page);
+    
+    const filterConditions = {
 
-    const filterConditions = {};
+    };
 
     if (filter) {
         filterConditions.specialization = filter
@@ -19,12 +21,29 @@ async function getAppointments(req, res) {
         filterConditions.surname = new RegExp(`.*${surname}.*`, 'i');
     }
 
+    if (city){     
+        filterConditions['location.city'] = city;
+
+    }
+
+    if (hospitalName){
+        filterConditions['location.hospitalName'] = hospitalName;
+    }
+    let bySort;
+    if (sort == 'asc'){
+        bySort = { name: 1 }
+    } else if(sort == 'desc'){
+        bySort = { name: -1 }
+    }
+
+
     try {
         const perPage = 10;
         const skip = (page-1) * perPage;
         
         const doctors = await Doctor.find(filterConditions)
-            .select("-__v -email -iban")            
+            .select("-__v -email -iban")
+            .sort(bySort)         
             .skip(skip)
             .limit(perPage)
 

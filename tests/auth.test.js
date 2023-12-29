@@ -2,17 +2,21 @@ const chai = require('chai');
 const { expect } = require('chai');
 const chaiHttp = require('chai-http');
 const server = require('../server');
+const { MongoMemoryServer } = require('mongodb-memory-server');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const { func } = require('joi');
 dotenv.config();
 
 chai.use(chaiHttp);
+let mongoServer;
 
-before(function (done){
+before(async function (done){
   this.timeout(5000);
-  // MongoDB'ye bağlan
-  const mongoURI = process.env.TEST_MONGODB_URI
+
+  
+  mongoServer = await MongoMemoryServer.create();
+  const mongoURI = mongoServer.getUri(mongodb+srv://root:39WyPlu444UHNvKA@healthdb.phei20i.mongodb.net/?retryWrites=true&w=majority);
+
   mongoose.connect(mongoURI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -27,8 +31,8 @@ before(function (done){
 
 after(async function() {
   try {
-    await mongoose.connection.db.dropDatabase();
-    await mongoose.connection.close();
+    await mongoose.disconnect();
+    await mongoServer.stop();
     console.log("MongoDB bağlantısı kesildi!");
   } catch (error) {
     console.error("Hata oluştu: ", error);
