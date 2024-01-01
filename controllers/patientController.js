@@ -206,7 +206,8 @@ async function getPatientUser(req,res){
                 "weight": patient.weight,
                 "MassIndex": patient.MassIndex,
                 "age": patient.age,
-                "appointments": patient.appointments
+                "appointments": patient.appointments,
+                "profilePhoto": patient.profilePhoto
         }
         
 

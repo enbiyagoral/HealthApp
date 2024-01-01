@@ -1,12 +1,25 @@
 const { Doctor } = require('../models/User');
 const Appointment = require('../models/Appointments');
 const Response = require('../utils/response');
-const {uploadProfilePhoto, getProfilePhoto } = require('../controllers/s3Controller');
+const { uploadProfilePhoto } = require('../controllers/s3Controller');
 const { convertDate } = require('../utils/calculateAge');
 const { getDatesBetweenDates } = require('../utils/betweenDate.js');
 
 
+async function updateProfilePhoto(req,res){
+  try {
+      const doctor = await Doctor.findById(req.user.userId);
 
+      if (!doctor) {
+          return new Response(404,"Error", "Kullanıcı bulunamadı.").error404(res);
+      }
+    
+      return new Response(200, null, doctor.profilePhoto).success(res);
+
+      } catch (error) {
+          return new Response(500,"Error", error.message).error500(res);
+      }
+}
 
 async function getProfile(req,res){
   const doctor = await Doctor.findById(req.user.userId);
@@ -155,4 +168,4 @@ async function deleteAppointment(req, res) {
     }
 }
 
-module.exports = { getProfile, updateProfile, getAppointments, getAppointment, updateAppointment, deleteAppointment, setWorkingTime, setRestTime};
+module.exports = { getProfile, updateProfile, updateProfilePhoto, getAppointments, getAppointment, updateAppointment, deleteAppointment, setWorkingTime, setRestTime};
